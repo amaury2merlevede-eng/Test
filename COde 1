@@ -3,6 +3,8 @@
 
 include("Colosse force")
 
+say("ah")
+
 if (getWeapon() == null) 
 {
      setWeapon(WEAPON_ELECTRISOR);
