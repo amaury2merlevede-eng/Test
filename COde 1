@@ -1,0 +1,1977 @@
+// @version:4
+//armer Underling
+
+include("Colosse force")
+
+if (getWeapon() == null) 
+{
+     setWeapon(WEAPON_ELECTRISOR);
+}
+useChip(CHIP_ADRENALINE, getEntity())
+
+if (getTP() <= 17 and getTurn() >= 2) {
+	useChip(CHIP_MANUMISSION, getEntity())
+}
+
+var totalstrength = null
+
+for (var leek in getAliveEnemies()) {
+	var strength = getStrength(leek)
+	if (strength > 0) {
+		totalstrength = totalstrength + strength
+	}
+}
+
+if (getFightType() == FIGHT_TYPE_BOSS)
+{
+    while (getTurn() <= 2) {
+	getOperations()
+}
+
+}
+
+//FUNCTIONS
+function IA_bulbe_métallique() {
+moveToward(getSummoner())
+
+    useChip(CHIP_ARMOR, getSummoner())
+	useChip(CHIP_WALL, getSummoner())
+	useChip(CHIP_WINGED_BOOTS, getSummoner())
+    useChip(CHIP_SHIELD, getSummoner())
+    
+}
+
+function IA_bulbe_savant() {
+	if (getPathLength(getCell(), getCell(getSummoner())) > 2) {
+	moveToward(getSummoner(), getPathLength(getCell(), getCell(getSummoner()) - 2))
+}
+	if (getPathLength(getCell(), getCell(getSummoner())) <= 2) {
+	moveAwayFrom(getSummoner(), 1)
+}
+
+    useChip(CHIP_MUTATION, getSummoner())
+	useChip(CHIP_ADRENALINE, getSummoner())
+	useChip(CHIP_THORN, getSummoner())
+    useChip(CHIP_ALTERATION, getNearestEnemy())
+    
+}
+
+function IA_bulbe_heal() {
+	if (getPathLength(getCell(), getCell(getSummoner())) > 2) {
+	moveToward(getSummoner(), getPathLength(getCell(), getCell(getSummoner()) - 2))
+}
+	if (getPathLength(getCell(), getCell(getSummoner())) <= 2) {
+	moveAwayFrom(getSummoner(), 1)
+}
+
+    useChip(CHIP_CURE, getSummoner())
+	
+if (getLife(getSummoner()) < getTotalLife(getSummoner())) {
+	useChip(CHIP_VACCINE, getSummoner())
+	useChip(CHIP_DRIP, getSummoner())
+    useChip(CHIP_BANDAGE, getSummoner())
+}   
+}
+
+
+//FINISHER
+//variables
+var drhino = 58
+var delec = 70
+var dsword = 181
+
+var dstalactite = 64
+var diceberg = 82
+var dlightning = 35
+var dpunishment = getLife()/4
+
+var me = getEntity()
+var macase1 = getCell()
+var lenemy = null
+var lowestLife = 1000000
+var disten = 100
+
+
+//lenemy
+for (var leek in getAliveEnemies() ) { 
+    if (isSummon(leek)) continue
+    var tmpCell = getCellToUseWeapon(getWeapon(), leek)
+	
+    if (getPathLength(getCell(), tmpCell) <= getMP()) {
+        var lifeEnemy = getLife(leek) ;
+        if (lifeEnemy < lowestLife) {
+            lenemy = leek
+            lowestLife = lifeEnemy
+        }
+    }
+}
+if (lenemy == null) { 
+for (var leek in getAliveEnemies() ) { 
+    if (isSummon(leek)) continue ; // si c'est un bulbe, je passe la suite et je passe au "leek" suivant
+	var macase11 = getCell()
+	var caseen1 = getCell(leek)
+    if (getPathLength(macase11, caseen1) < disten) {
+            lenemy = leek;
+           disten = getPathLength(macase1, caseen1)
+        }
+    }
+}
+
+//spécial Deatheater
+
+while (getTotalLife(lenemy) == 1997) {
+	getOperations()
+}
+
+
+var force = getStrength()
+var lifelenemy = getLife(lenemy)
+var relshi1 = getRelativeShield(lenemy)
+var absshi1 = getAbsoluteShield(lenemy)
+
+var rhinodégatsfinaux = drhino * (1 + force / 100) * (1 - relshi1 / 100) - absshi1
+var elecdégatsfinaux = delec * (1 + force / 100) * (1 - relshi1 / 100) - absshi1
+var sworddégatsfinaux = dsword * (1 + force / 100) * (1 - relshi1 / 100) - absshi1
+
+var icebergdégatsfinaux = diceberg * (1 + force / 100) * (1 - relshi1 / 100) - absshi1
+var stalactitedégatsfinaux = dstalactite * (1 + force / 100) * (1 - relshi1 / 100) - absshi1
+var lightningdégatsfinaux = dlightning * (1 + force / 100) * (1 - relshi1 / 100) - absshi1
+var punishmentdégatsfinaux = dpunishment * (1 - relshi1 / 100) - absshi1
+var mp = getMP()
+var caseen1 = getCell(lenemy)
+debug(punishmentdégatsfinaux)
+
+var effects2
+var pagility2 = 0
+if (effects2 == null) { 
+for (var effect in getEffects(lenemy) ) { 
+    if (effect[0] == EFFECT_DAMAGE_RETURN)  { 
+	pagility2 = pagility2 + effect[1]
+	
+        }
+    }
+}
+
+//functions
+function getClosestCellToUseWeapon1(lenemy) {
+    var closest = null
+    var minDistance = 9999
+    for (var rhinocell in getCellsToUseWeapon(WEAPON_RHINO, lenemy)) {
+        var distance = getCellDistance(getCell(), rhinocell)
+        if (distance != null and distance < minDistance) {
+            closest = rhinocell
+            minDistance = distance            
+        }
+    }
+    return closest
+}
+
+var rhinocell = getClosestCellToUseWeapon1(lenemy)
+
+function getClosestCellToUseWeapon2(lenemy) {
+    var closest = null
+    var minDistance = 9999
+    for (var enhancedcell in getCellsToUseWeapon(WEAPON_ELECTRISOR, lenemy)) {
+        var distance = getCellDistance(getCell(), enhancedcell)
+        if (distance != null and distance < minDistance) {
+            closest = enhancedcell
+            minDistance = distance            
+        }
+    }
+    return closest
+}
+
+// On avance vers la cellule d'utilisation la plus proche
+var eleccell = getClosestCellToUseWeapon2(lenemy)
+
+
+function getClosestCellToUseWeapon4(lenemy) {
+    var closest = null
+    var minDistance = 9999
+    for (var swordcell in getCellsToUseWeapon(WEAPON_HEAVY_SWORD, lenemy)) {
+        var distance = getCellDistance(getCell(),swordcell)
+        if (distance != null and distance < minDistance) {
+            closest = swordcell
+            minDistance = distance            
+        }
+    }
+    return closest
+}
+
+var swordcell = getClosestCellToUseWeapon4(lenemy)
+
+function getClosestCellToUseChip2(lenemy) {
+    var closest = null
+    var minDistance = 9999
+    for (var stalactitecell in getCellsToUseChip(CHIP_STALACTITE, lenemy)) {
+        var distance = getCellDistance(getCell(), stalactitecell)
+        if (distance != null and distance < minDistance) {
+            closest = stalactitecell
+            minDistance = distance            
+        }
+    }
+    return closest
+}
+
+var stalactitecell = getClosestCellToUseChip2(lenemy)
+
+if (swordcell == null) {
+	if (getPathLength(macase1, 0) <= getPathLength(macase1, 612)) {
+		swordcell = 612
+		}
+	if (getPathLength(macase1, 0) > getPathLength(macase1, 612)) {
+		swordcell = 0
+		}
+}
+
+function getClosestCellToUseChip3(lenemy) {
+    var closest = null
+    var minDistance = 9999
+    for (var icebergcell in getCellsToUseChip(CHIP_ICEBERG, lenemy)) {
+        var distance = getCellDistance(getCell(), icebergcell)
+        if (distance != null and distance < minDistance) {
+            closest = icebergcell
+            minDistance = distance            
+        }
+    }
+    return closest
+}
+
+var icebergcell = getClosestCellToUseChip3(lenemy)
+
+function getClosestCellToUseChip4(lenemy) {
+    var closest = null
+    var minDistance = 9999
+    for (var meteoritecell in getCellsToUseChip(CHIP_LIGHTNING, lenemy)) {
+        var distance = getCellDistance(getCell(), meteoritecell)
+        if (distance != null and distance < minDistance) {
+            closest = meteoritecell
+            minDistance = distance            
+        }
+    }
+    return closest
+}
+
+var lightningcell = getClosestCellToUseChip4(lenemy)
+
+function getClosestCellToUseChip5(lenemy) {
+    var closest = null
+    var minDistance = 9999
+    for (var liberationcell in getCellsToUseChip(CHIP_LIBERATION, lenemy)) {
+        var distance = getCellDistance(getCell(), liberationcell)
+        if (distance != null and distance < minDistance) {
+            closest = liberationcell
+            minDistance = distance            
+        }
+    }
+    return closest
+}
+
+var liberationcell = getClosestCellToUseChip5(lenemy)
+
+var macase2 = getCell()
+
+
+if (getWeapon() == WEAPON_RHINO and getPathLength(macase1, rhinocell) <=mp) {
+	if (getTP() >= 5 and rhinodégatsfinaux >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+	if (getTP() >= 10 and rhinodégatsfinaux*2 >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+	if (getTP() >= 15 and rhinodégatsfinaux*3 >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+	if (getTP() >= 20 and rhinodégatsfinaux*4 >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+	if (getTP() >= 25 and rhinodégatsfinaux*5 >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+}
+
+
+if (getWeapon() != WEAPON_RHINO and getPathLength(macase1, rhinocell) <=mp) {
+	if (getTP() >= 6 and rhinodégatsfinaux >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		setWeapon(WEAPON_RHINO)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+	if (getTP() >= 11 and rhinodégatsfinaux*2 >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		setWeapon(WEAPON_RHINO)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+	if (getTP() >= 16 and rhinodégatsfinaux*3 >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		setWeapon(WEAPON_RHINO)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+	if (getTP() >= 21 and rhinodégatsfinaux*4 >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		setWeapon(WEAPON_RHINO)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+	if (getTP() >= 26 and rhinodégatsfinaux*5 >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		setWeapon(WEAPON_RHINO)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+}
+
+
+if (getWeapon() == WEAPON_ELECTRISOR and getPathLength(macase1, eleccell) <=mp) {
+	if (getTP() >= 7 and elecdégatsfinaux >= lifelenemy) {
+		moveTowardCell(eleccell)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+	if (getTP() >= 14 and 2 * elecdégatsfinaux >= lifelenemy) {
+		moveTowardCell(eleccell)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+	if (getTP() >= 21 and 3 * elecdégatsfinaux >= lifelenemy) {
+		moveTowardCell(eleccell)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+}
+
+if (getWeapon() != WEAPON_ELECTRISOR and getPathLength(macase1, eleccell) <=mp) {
+	if (getTP() >= 8 and elecdégatsfinaux >= lifelenemy) {
+		moveTowardCell(eleccell)
+		setWeapon(WEAPON_ELECTRISOR)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+	if (getTP() >= 15 and 2 *elecdégatsfinaux >= lifelenemy) {
+		moveTowardCell(eleccell)
+		setWeapon(WEAPON_ELECTRISOR)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+	if (getTP() >= 22 and 3 * elecdégatsfinaux >= lifelenemy) {
+		moveTowardCell(eleccell)
+		setWeapon(WEAPON_ELECTRISOR)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+}
+
+
+if (getWeapon() == WEAPON_HEAVY_SWORD and getPathLength(macase1, swordcell) <=mp) {
+	if (getTP() >= 15 and sworddégatsfinaux >= lifelenemy) {
+		moveTowardCell(swordcell)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+	if (getTP() >= 30 and sworddégatsfinaux*2 >= lifelenemy) {
+		moveTowardCell(swordcell)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+}
+	
+if (getWeapon() != WEAPON_HEAVY_SWORD and getPathLength(macase1, swordcell) <=mp) {
+	if (getTP() >= 16 and sworddégatsfinaux >= lifelenemy) {
+		moveTowardCell(swordcell)
+		setWeapon(WEAPON_HEAVY_SWORD)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+	if (getTP() >= 31 and sworddégatsfinaux*2 >= lifelenemy) {
+		moveTowardCell(swordcell)
+		setWeapon(WEAPON_HEAVY_SWORD)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill")
+	}
+}
+
+if (getFightType() == FIGHT_TYPE_SOLO and getPathLength(macase1, caseen1) <= mp and getTP()>=5 and punishmentdégatsfinaux >= lifelenemy and pagility2 < 50) {
+	moveToward(lenemy)
+	useChip(CHIP_PUNISHMENT, lenemy)
+	debug("kill t1")
+	debug(punishmentdégatsfinaux)
+}
+
+if (getFightType() == FIGHT_TYPE_SOLO and getWeapon() == WEAPON_HEAVY_SWORD and getPathLength(macase1, caseen1) <= mp and getTP()>=20 and punishmentdégatsfinaux + sworddégatsfinaux>= lifelenemy and pagility2 < 50) {
+	moveToward(lenemy)
+	useChip(CHIP_PUNISHMENT, lenemy)
+	useWeapon(lenemy)
+	debug(punishmentdégatsfinaux + " + " + sworddégatsfinaux)
+	debug("kill t2")
+}
+
+if (getFightType() == FIGHT_TYPE_SOLO and getWeapon() != WEAPON_HEAVY_SWORD and getPathLength(macase1, caseen1) <= mp and getTP()>=21 and punishmentdégatsfinaux + sworddégatsfinaux>= lifelenemy and pagility2 < 50) {
+	moveToward(lenemy)
+	setWeapon(WEAPON_HEAVY_SWORD)
+	useChip(CHIP_PUNISHMENT, lenemy)
+	useWeapon(lenemy)
+	debug(punishmentdégatsfinaux + " + " + sworddégatsfinaux)
+	debug("kill t3")
+}
+
+//liberation var
+var relshi2 = getRelativeShield(lenemy)*0.4
+var absshi2 = getAbsoluteShield(lenemy)*0.4
+var sworddégatsfinaux2 = dsword * (1 + force / 100) * (1 - relshi2 / 100) - absshi2
+var elecdégatsfinaux2 = delec * (1 + force / 100) * (1 - relshi2 / 100) - absshi2
+var rhinodégatsfinaux2 = drhino * (1 + force / 100) * (1 - relshi2 / 100) - absshi2
+
+var icebergdégatsfinaux2 = diceberg * (1 + force / 100) * (1 - relshi2 / 100) - absshi2
+var stalactitedégatsfinaux2 = dstalactite * (1 + force / 100) * (1 - relshi2 / 100) - absshi2
+var lightningdégatsfinaux2 = dlightning * (1 + force / 100) * (1 - relshi2 / 100) - absshi2
+var punishmentdégatsfinaux2 = dpunishment * (1 - relshi2 / 100) - absshi2
+
+//phase 2
+if (getWeapon() == WEAPON_RHINO and getPathLength(macase1, rhinocell) <=mp and getCooldown(CHIP_LIBERATION) == 0) {
+	if (getTP() >= 10 and rhinodégatsfinaux2 >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		useChip(CHIP_LIBERATION, lenemy)
+		useWeapon(lenemy)
+				debug("kill2")
+	}
+	if (getTP() >= 15 and rhinodégatsfinaux2*2 >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		useChip(CHIP_LIBERATION, lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill2")
+	}
+	if (getTP() >= 20 and rhinodégatsfinaux2*3 >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		useChip(CHIP_LIBERATION, lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill2")
+	}
+	if (getTP() >= 25 and rhinodégatsfinaux2*4 >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		useChip(CHIP_LIBERATION, lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill2")
+	}
+}
+
+if (getWeapon() != WEAPON_RHINO and getPathLength(macase1, rhinocell) <=mp and getCooldown(CHIP_LIBERATION) == 0) {
+	if (getTP() >= 11 and rhinodégatsfinaux2 >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		useChip(CHIP_LIBERATION, lenemy)
+		setWeapon(WEAPON_RHINO)
+		useWeapon(lenemy)
+				debug("kill2")
+	}
+	if (getTP() >= 16 and rhinodégatsfinaux2*2 >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		useChip(CHIP_LIBERATION, lenemy)
+		setWeapon(WEAPON_RHINO)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill2")
+	}
+	if (getTP() >= 21 and rhinodégatsfinaux2*3 >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		useChip(CHIP_LIBERATION, lenemy)
+		setWeapon(WEAPON_RHINO)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill2")
+	}
+	if (getTP() >= 26 and rhinodégatsfinaux2*4 >= lifelenemy) {
+		moveTowardCell(rhinocell)
+		useChip(CHIP_LIBERATION, lenemy)
+		setWeapon(WEAPON_RHINO)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill2")
+	}
+}
+
+
+if (getWeapon() == WEAPON_ELECTRISOR and getPathLength(macase1, eleccell) <=mp) {
+	if (getTP() >= 12 and elecdégatsfinaux2 >= lifelenemy) {
+		moveTowardCell(eleccell)
+		useChip(CHIP_LIBERATION, lenemy)
+		useWeapon(lenemy)
+				debug("kill 2")
+	}
+	if (getTP() >= 19 and 2 * elecdégatsfinaux2 >= lifelenemy) {
+		moveTowardCell(eleccell)
+		useChip(CHIP_LIBERATION, lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill 2")
+	}
+	if (getTP() >= 26 and 3 * elecdégatsfinaux2 >= lifelenemy) {
+		moveTowardCell(eleccell)
+		useChip(CHIP_LIBERATION, lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill 2")
+	}
+}
+
+if (getWeapon() != WEAPON_ELECTRISOR and getPathLength(macase1, eleccell) <=mp) {
+	if (getTP() >= 8 and elecdégatsfinaux2 >= lifelenemy) {
+		moveTowardCell(eleccell)
+		useChip(CHIP_LIBERATION, lenemy)
+		setWeapon(WEAPON_ELECTRISOR)
+		useWeapon(lenemy)
+				debug("kill 2")
+	}
+	if (getTP() >= 15 and 2 *elecdégatsfinaux2 >= lifelenemy) {
+		moveTowardCell(eleccell)
+		useChip(CHIP_LIBERATION, lenemy)
+		setWeapon(WEAPON_ELECTRISOR)
+		useWeapon(lenemy)
+		useWeapon(lenemy)
+				debug("kill 2")
+	}
+}
+
+
+if (getWeapon() == WEAPON_HEAVY_SWORD and getPathLength(macase1, swordcell) <=mp and getCooldown(CHIP_LIBERATION) == 0) {
+	if (getTP() >= 20 and sworddégatsfinaux2 >= lifelenemy) {
+		moveTowardCell(swordcell)
+		useChip(CHIP_LIBERATION, lenemy)
+		useWeapon(lenemy)
+				debug("kill2")
+	}
+}
+	
+if (getWeapon() != WEAPON_HEAVY_SWORD and getPathLength(macase1, swordcell) <=mp and getCooldown(CHIP_LIBERATION) == 0) {
+	if (getTP() >= 16 and sworddégatsfinaux2 >= lifelenemy) {
+		moveTowardCell(swordcell)
+		useChip(CHIP_LIBERATION, lenemy)
+		setWeapon(WEAPON_HEAVY_SWORD)
+		useWeapon(lenemy)
+				debug("kill2")
+	}
+}
+
+if (getFightType() == FIGHT_TYPE_SOLO and getPathLength(macase1, caseen1) <= mp and getTP()>=10 and punishmentdégatsfinaux2 >= lifelenemy and pagility2 < 50) {
+	moveToward(lenemy)
+	useChip(CHIP_PUNISHMENT, lenemy)
+	debug("kill 2t1")
+}
+
+if (getFightType() == FIGHT_TYPE_SOLO and getWeapon() == WEAPON_HEAVY_SWORD and getPathLength(macase1, caseen1) <= mp and getTP()>=25 and punishmentdégatsfinaux2 + sworddégatsfinaux2>= lifelenemy and getCooldown(CHIP_LIBERATION) == 0 and pagility2 < 50) {
+	moveToward(lenemy)
+	useChip(CHIP_LIBERATION, lenemy)
+	useChip(CHIP_PUNISHMENT, lenemy)
+	useWeapon(lenemy)
+	debug("kill 2t2")
+}
+
+if (getFightType() == FIGHT_TYPE_SOLO and getWeapon() != WEAPON_HEAVY_SWORD and getPathLength(macase1, caseen1) <= mp and getTP()>=26 and punishmentdégatsfinaux2 + sworddégatsfinaux2>= lifelenemy  and getCooldown(CHIP_LIBERATION) == 0 and pagility2 < 50) {
+	moveToward(lenemy)
+	setWeapon(WEAPON_HEAVY_SWORD)
+	useChip(CHIP_LIBERATION, lenemy)
+	useChip(CHIP_PUNISHMENT, lenemy)
+	useWeapon(lenemy)
+	debug("kill 2t3")
+}
+
+//SAVE MYSELF
+var hp = getLife()
+var objhp = getTotalLife()*0.4
+
+var effects
+var pdamage = 0
+if (effects == null) { 
+for (var effect in getEffects() ) { 
+    if (effect[0] == EFFECT_POISON)  { 
+	pdamage = pdamage + effect[1]
+	
+        }
+    }
+}
+debug(getEffects() + " & " + pdamage)
+
+if (pdamage > 100) {
+	useChip(CHIP_ANTIDOTE, me)
+}
+
+if (hp <= objhp) {
+	useChip(CHIP_REGENERATION, me)
+}
+debug(hp + " & " + objhp)
+var nhp = getLife()
+var nobjhp = getTotalLife()*0.4
+
+if (nhp <= nobjhp) {
+	if (getCooldown(CHIP_REMISSION) == 0 or getChipCooldown(CHIP_SERUM) == 0) {
+		if (getTP() >= 5)
+		useChip(CHIP_SERUM, me)
+		useChip(CHIP_REMISSION, me)
+		moveAwayFrom(getNearestEnemy())
+	}
+	if (totalstrength >= 300) {
+	summon(CHIP_METALLIC_BULB , getCellToUseChip(CHIP_METALLIC_BULB, getEntity()), IA_bulbe_métallique)
+		useChip(CHIP_ARMOR, me)
+	useChip(CHIP_FORTRESS, me)
+	useChip(CHIP_WALL, me)
+}
+	
+}
+
+//DAMAGE
+if (getTurn() == 1) {
+	setWeapon(WEAPON_ELECTRISOR)
+}
+
+var enemy = getNearestEnemy()
+
+var macase = getCell()
+var me1 = getEntity()
+//DAMAGE
+var nforce = getStrength()
+var lifeenemy = getLife(enemy)
+
+var effects1
+var pagility = 0
+if (effects1 == null) { 
+for (var effect in getEffects(enemy) ) { 
+    if (effect[0] == EFFECT_DAMAGE_RETURN)  { 
+	pagility = pagility + effect[1]
+	
+        }
+    }
+}
+
+var mindamage = lifeenemy*0.025
+
+if (pagility > 50) {
+	mindamage = 10000
+}
+debug(pagility + " + " + mindamage)
+
+var ndrhino = 61
+var ndelec = 75
+var ndbazooka = 119
+var ndsword = 194.5
+
+var ndlightning = 41
+var ndstalactite = 65.5
+var ndiceberg = 86
+
+var relshi = getRelativeShield(enemy)
+var absshi = getAbsoluteShield(enemy)
+
+var rhinodégats = ndrhino * (1 + nforce / 100) * (1 - relshi / 100) - absshi
+var elecdégats = ndelec * (1 + nforce / 100) * (1 - relshi / 100) - absshi
+var bazookadégats = ndbazooka * (1 + nforce / 100) * (1 - relshi / 100) - absshi
+var sworddégats = ndsword * (1 + nforce / 100) * (1 - relshi / 100) - absshi
+
+var lightningdégats1 = ndlightning * (1 + nforce / 100) * (1 - relshi / 100) - absshi
+var stalactitedégats1 = ndstalactite * (1 + nforce / 100) * (1 - relshi / 100) - absshi
+var icebergdégats1 = ndiceberg * (1 + nforce / 100) * (1 - relshi / 100) - absshi
+
+var lightningdégats = 0
+var stalactitedégats = 0
+var icebergdégats = 0
+
+if (lightningdégats1 >= mindamage and getCooldown(CHIP_LIGHTNING) == 0) {
+	lightningdégats = lightningdégats1
+}
+if (stalactitedégats1 >= mindamage and getCooldown(CHIP_STALACTITE) == 0) {
+	stalactitedégats = stalactitedégats1
+}
+if (icebergdégats1 >= mindamage and getCooldown(CHIP_ICEBERG) == 0) {
+	icebergdégats = icebergdégats1
+}
+
+var relshil = getRelativeShield(enemy) * 0.4
+var absshil = getAbsoluteShield(enemy) * 0.4
+
+var rhinodégatsl = ndrhino * (1 + nforce / 100) * (1 - relshil / 100) - absshil
+var elecdégatsl = ndelec * (1 + nforce / 100) * (1 - relshil / 100) - absshil
+var bazookadégatsl = ndbazooka * (1 + nforce / 100) * (1 - relshil / 100) - absshil
+var sworddégatsl = ndsword * (1 + nforce / 100) * (1 - relshil / 100) - absshil
+
+var lightningdégatsl1 = ndlightning * (1 + nforce / 100) * (1 - relshil / 100) - absshil
+var stalactitedégatsl1 = ndstalactite * (1 + nforce / 100) * (1 - relshil / 100) - absshil
+var icebergdégatsl1 = ndiceberg * (1 + nforce / 100) * (1 - relshil / 100) - absshil
+
+var lightningdégatsl = 0
+var stalactitedégatsl = 0
+var icebergdégatsl = 0
+var meteoritedégatsl = 0
+
+if (lightningdégatsl1 >= mindamage and getCooldown(CHIP_LIGHTNING) == 0) {
+	lightningdégatsl = lightningdégatsl1
+}
+if (stalactitedégatsl1 >= mindamage and getCooldown(CHIP_STALACTITE) == 0) {
+	stalactitedégatsl = stalactitedégatsl1
+}
+if (icebergdégatsl1 >= mindamage and getCooldown(CHIP_ICEBERG) == 0) {
+	icebergdégatsl = icebergdégatsl1
+}
+
+
+var nmp = getMP()
+var tp = getTP()
+
+
+//functions
+function ngetClosestCellToUseWeapon1(enemy) {
+    var closest = null
+    var minDistance = 9999
+    for (var rhinocell in getCellsToUseWeapon(WEAPON_RHINO, enemy)) {
+        var distance = getCellDistance(getCell(), rhinocell)
+        if (distance != null and distance < minDistance) {
+            closest = rhinocell
+            minDistance = distance            
+        }
+    }
+    return closest
+}
+
+var nrhinocell = ngetClosestCellToUseWeapon1(enemy)
+
+function ngetClosestCellToUseWeapon2(enemy) {
+    var closest = null
+    var minDistance = 9999
+    for (var eleccell in getCellsToUseWeapon(WEAPON_ELECTRISOR, enemy)) {
+        var distance = getCellDistance(getCell(), eleccell)
+        if (distance != null and distance < minDistance) {
+            closest = eleccell
+            minDistance = distance            
+        }
+    }
+    return closest
+}
+
+// On avance vers la cellule d'utilisation la plus proche
+var neleccell = ngetClosestCellToUseWeapon2(enemy)
+
+function ngetClosestCellToUseWeapon3(enemy) {
+    var closest = null
+    var minDistance = 9999
+    for (var bazookacell in getCellsToUseWeapon(WEAPON_BAZOOKA, enemy)) {
+        var distance = getCellDistance(getCell(), bazookacell)
+        if (distance != null and distance < minDistance) {
+            closest = bazookacell
+            minDistance = distance            
+        }
+    }
+    return closest
+}
+
+var nbazookacell = ngetClosestCellToUseWeapon3(enemy)
+
+if (nbazookacell == null) {
+	if (getPathLength(macase, 0) <= getPathLength(macase, 612)) {
+		nbazookacell = 612
+		}
+	if (getPathLength(macase, 0) > getPathLength(macase, 612)) {
+		nbazookacell = 0
+		}
+}
+
+function ngetClosestCellToUseWeapon4(enemy) {
+    var closest = null
+    var minDistance = 9999
+    for (var swordcell in getCellsToUseWeapon(WEAPON_HEAVY_SWORD, enemy)) {
+        var distance = getCellDistance(getCell(),swordcell)
+        if (distance != null and distance < minDistance) {
+            closest = swordcell
+            minDistance = distance            
+        }
+    }
+    return closest
+}
+
+var nswordcell = ngetClosestCellToUseWeapon4(enemy)
+
+if (nswordcell == null) {
+	if (getPathLength(macase, 0) <= getPathLength(macase, 612)) {
+		nswordcell = 612
+		}
+	if (getPathLength(macase, 0) > getPathLength(macase, 612)) {
+		nswordcell = 0
+		}
+}
+
+//meteoritephase
+function ngetClosestCellToUseChip1(enemy) {
+    var closest = null
+    var minDistance = 9999
+    for (var stalactitecell in getCellsToUseChip(CHIP_LIGHTNING, enemy)) {
+        var distance = getCellDistance(getCell(), stalactitecell)
+        if (distance != null and distance < minDistance) {
+            closest = stalactitecell
+            minDistance = distance            
+        }
+    }
+    return closest
+}
+
+var nlightningcell = ngetClosestCellToUseChip1(enemy)
+
+function ngetClosestCellToUseChip2(enemy) {
+    var closest = null
+    var minDistance = 9999
+    for (var stalactitecell in getCellsToUseChip(CHIP_STALACTITE, enemy)) {
+        var distance = getCellDistance(getCell(), stalactitecell)
+        if (distance != null and distance < minDistance) {
+            closest = stalactitecell
+            minDistance = distance            
+        }
+    }
+    return closest
+}
+
+var nstalactitecell = ngetClosestCellToUseChip2(enemy)
+
+function ngetClosestCellToUseChip3(enemy) {
+    var closest = null
+    var minDistance = 9999
+    for (var icebergcell in getCellsToUseChip(CHIP_ICEBERG, enemy)) {
+        var distance = getCellDistance(getCell(), icebergcell)
+        if (distance != null and distance < minDistance) {
+            closest = icebergcell
+            minDistance = distance            
+        }
+    }
+    return closest
+}
+
+var nicebergcell = ngetClosestCellToUseChip3(enemy)
+
+function ngetClosestCellToUseChip4(enemy) {
+    var closest = null
+    var minDistance = 9999
+    for (var liberationcell in getCellsToUseChip(CHIP_LIBERATION, enemy)) {
+        var distance = getCellDistance(getCell(), liberationcell)
+        if (distance != null and distance < minDistance) {
+            closest = liberationcell
+            minDistance = distance            
+        }
+    }
+    return closest
+}
+
+var nliberationcell = ngetClosestCellToUseChip4(enemy)
+
+
+// Mark
+mark(nrhinocell, COLOR_RED)
+mark(neleccell, COLOR_GREEN)
+mark(nbazookacell, COLOR_BLUE)
+mark(nswordcell, 1)
+
+// CAS 1
+if (getPathLength(macase, nrhinocell) <= getMP() and getPathLength(macase, neleccell) > getMP() and getPathLength(macase, nbazookacell) > getMP() and getPathLength(macase, nswordcell) > getMP() and getTP()>=5) {
+	debug("Cas 1")
+	if (getWeapon() != WEAPON_RHINO) {
+		setWeapon(WEAPON_RHINO)
+	}
+	if (getTP() >= 26 and getChipCooldown(CHIP_LIBERATION) == 0 and rhinodégatsl > mindamage and 4 * rhinodégatsl > 5 * rhinodégats) {
+	useChip(CHIP_LIBERATION, enemy)
+	}
+	if (getTP() >= 21 and getChipCooldown(CHIP_LIBERATION) == 0 and rhinodégatsl > mindamage and 3 * rhinodégatsl > 4 * rhinodégats) {
+	useChip(CHIP_LIBERATION, enemy)
+	}
+	if (getTP() >= 16 and getChipCooldown(CHIP_LIBERATION) == 0 and rhinodégatsl > mindamage and 2 * rhinodégatsl > 3 * rhinodégats) {
+	useChip(CHIP_LIBERATION, enemy)
+	}
+	if (getTP() >= 11 and getChipCooldown(CHIP_LIBERATION) == 0 and rhinodégatsl > mindamage and rhinodégatsl > 2 * rhinodégats) {
+	useChip(CHIP_LIBERATION, enemy)
+	}
+	if (getWeapon() == WEAPON_RHINO) {
+		if (getTP() >= 26 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, nicebergcell) <= getMP() and rhinodégats > mindamage and icebergdégats > 0 and stalactitedégats > 0 and stalactitedégats > rhinodégats + lightningdégats) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useChip(CHIP_STALACTITE, enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, nicebergcell) <= getMP() and rhinodégats > mindamage and icebergdégats > 0 and lightningdégats > 0 and lightningdégats + icebergdégats > rhinodégats + stalactitedégats) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_LIGHTNING, enemy)
+		}
+		if (getTP() >= 26 and rhinodégats > mindamage and stalactitedégats > 0) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, nicebergcell) <= getMP() and rhinodégats > mindamage and lightningdégats > 0 and icebergdégats > 2 * rhinodégats) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 26 and rhinodégats > mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 21 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, nicebergcell) <= getMP() and rhinodégats > mindamage and icebergdégats > 0 and stalactitedégats > 0 and stalactitedégats > rhinodégats + lightningdégats) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useChip(CHIP_STALACTITE, enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 21 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, nicebergcell) <= getMP() and rhinodégats > mindamage and icebergdégats > 0 and lightningdégats > 0 and lightningdégats + icebergdégats > rhinodégats + stalactitedégats) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_LIGHTNING, enemy)
+		}
+		if (getTP() >= 21 and rhinodégats > mindamage and stalactitedégats > 0) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 21 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, nicebergcell) <= getMP() and rhinodégats > mindamage and lightningdégats > 0 and icebergdégats > 2 * rhinodégats) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 21 and rhinodégats > mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 16 and getPathLength(macase, nicebergcell) <= getMP() and icebergdégats > 0 and stalactitedégats > 0 and stalactitedégats > rhinodégats + lightningdégats) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_STALACTITE, enemy)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 16 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, nicebergcell) <= getMP() and rhinodégats > mindamage and icebergdégats > 0 and lightningdégats > 0 and lightningdégats + icebergdégats > rhinodégats + stalactitedégats) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_LIGHTNING, enemy)
+		}
+		if (getTP() >= 16 and rhinodégats > mindamage and stalactitedégats > 0) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 16 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, nicebergcell) <= getMP() and rhinodégats > mindamage and lightningdégats > 0 and icebergdégats > 2 * rhinodégats) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 16 and rhinodégats > mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, nicebergcell) <= getMP() and icebergdégats > 0 and lightningdégats > 0 and icebergdégats + lightningdégats > rhinodégats + stalactitedégats) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_LIGHTNING, enemy)
+		}
+		if (getTP() >= 11 and rhinodégats> mindamage and stalactitedégats > 0) {
+			moveTowardCell(nrhinocell)
+			useChip(CHIP_STALACTITE, enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, nicebergcell) <= getMP() and icebergdégats> 0) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 11 and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 6 and stalactitedégats> 0) {
+			moveTowardCell(nstalactitecell)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 5 and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+		}
+	}
+}
+
+
+// CAS 2
+if (getPathLength(macase, nrhinocell) > getMP() and getPathLength(macase, neleccell) <= getMP() and getPathLength(macase, nbazookacell) > getMP() and getPathLength(macase, nswordcell) > getMP() and getTP()>=5) {
+	debug("Cas 2")
+	if (getWeapon() != WEAPON_ELECTRISOR) {
+		setWeapon(WEAPON_ELECTRISOR)
+	}
+	if (getTP() >= 26 and getChipCooldown(CHIP_LIBERATION) == 0 and elecdégatsl > mindamage and 3 * elecdégatsl > 3 * elecdégats) {
+	moveTowardCell(neleccell)
+	useChip(CHIP_LIBERATION, enemy)
+	}
+	if (getTP() >= 18 and getChipCooldown(CHIP_LIBERATION) == 0 and elecdégatsl > mindamage and 2 * elecdégatsl > 3 * elecdégats) {
+	moveTowardCell(neleccell)
+	useChip(CHIP_LIBERATION, enemy)
+	}
+	if (getTP() >= 12 and getChipCooldown(CHIP_LIBERATION) == 0 and elecdégatsl > mindamage and elecdégatsl > 2 * elecdégats) {
+	moveTowardCell(neleccell)
+	useChip(CHIP_LIBERATION, enemy)
+	}
+	if (getWeapon() == WEAPON_ELECTRISOR) {
+		if (getTP() >= 24) {
+			useChip(CHIP_PROTEIN, me1)
+		}
+		if (getTP() >= 21 and elecdégats > mindamage) {
+				moveTowardCell(neleccell)
+				useWeapon(enemy)
+				useWeapon(enemy)
+				useWeapon(enemy)
+			}
+		if (getTP() >= 20 and elecdégats > mindamage and stalactitedégats > mindamage) {
+				moveTowardCell(neleccell)
+				useWeapon(enemy)
+				useWeapon(enemy)
+				useChip(CHIP_STALACTITE, enemy)
+			}
+		if (getTP() >= 17) {
+			useChip(CHIP_PROTEIN, me1)
+		}
+		if (getTP() >= 14 and elecdégats > mindamage) {
+				moveTowardCell(neleccell)
+				useWeapon(enemy)
+				useWeapon(enemy)
+			}
+		if (getTP() >= 13 and elecdégats > mindamage and stalactitedégats > mindamage) {
+				moveTowardCell(neleccell)
+				useWeapon(enemy)
+				useChip(CHIP_STALACTITE, enemy)
+			}
+		if (getTP() >= 10) {
+			useChip(CHIP_PROTEIN, me1)
+		}
+		if (getTP() >= 7 and elecdégats > mindamage) {
+				moveTowardCell(neleccell)
+				useWeapon(enemy)
+			}
+		if (getTP() >= 6 and stalactitedégats > mindamage) {
+				moveTowardCell(nstalactitecell)
+				useChip(CHIP_STALACTITE, enemy)
+		}
+	}
+}
+// CAS 3
+if (getPathLength(macase, nrhinocell) > getMP() and getPathLength(macase, neleccell) > getMP() and getPathLength(macase, nbazookacell) <= getMP() and getPathLength(macase, nswordcell) > getMP() and getTP()>=5) {
+	debug("Cas 3")
+	if (getWeapon() != WEAPON_BAZOOKA) {
+		setWeapon(WEAPON_BAZOOKA)
+	}
+	if (getWeapon() == WEAPON_BAZOOKA) {
+		if (getTP() >= 25) {
+			useChip(CHIP_PROTEIN, me1)
+		}
+		if (getTP() >= 22 and bazookadégats > mindamage) {
+			moveTowardCell(nbazookacell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 18) {
+			useChip(CHIP_STEROID, me1)
+		}
+		if (getTP() >= 14) {
+			useChip(CHIP_PROTEIN, me1)
+		}
+		if (getTP() >= 11 and bazookadégats > mindamage) {
+			moveTowardCell(nbazookacell)
+			useWeapon(enemy)
+		}
+	}
+}
+
+		
+// CAS 4
+if (getPathLength(macase, nrhinocell) <= getMP() and getPathLength(macase, neleccell) > getMP() and getPathLength(macase, nswordcell) <= getMP() and getTP()>=5) {
+	debug("Cas 4")
+	if (getWeapon() == WEAPON_ELECTRISOR) {
+		setWeapon(WEAPON_RHINO)
+	}
+	if (getTP() >= 26 and getChipCooldown(CHIP_LIBERATION) == 0 and rhinodégatsl > mindamage and sworddégatsl + rhinodégatsl > sworddégats + 2 * rhinodégats) {
+		useChip(CHIP_LIBERATION, enemy)
+	}
+	if (getTP() >= 21 and getChipCooldown(CHIP_LIBERATION) == 0 and sworddégatsl > mindamage and sworddégatsl > sworddégats + rhinodégats) {
+		useChip(CHIP_LIBERATION, enemy)
+	}
+	if (getTP() >= 16 and getChipCooldown(CHIP_LIBERATION) == 0 and rhinodégatsl > mindamage and 2 * rhinodégatsl > sworddégats) {
+		useChip(CHIP_LIBERATION, enemy)
+	}
+	if (getTP() >= 11 and getChipCooldown(CHIP_LIBERATION) == 0 and rhinodégatsl > mindamage and rhinodégatsl > 2 * rhinodégats) {
+		useChip(CHIP_LIBERATION, enemy)
+	}
+	if (getWeapon() == WEAPON_RHINO) {
+		if (getTP() >= 26 and getPathLength(macase, nicebergcell) + getPathLength(nicebergcell, nswordcell) <= getMP() and sworddégats> mindamage and icebergdégats > 0 and icebergdégats > 2 * rhinodégats) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_HEAVY_SWORD)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nswordcell) + getPathLength(nswordcell, nicebergcell) <= getMP() and sworddégats> mindamage and icebergdégats > 0 and icebergdégats > 2 * rhinodégats) {
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_HEAVY_SWORD)
+			useWeapon(enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, nswordcell) <= getMP() and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_HEAVY_SWORD)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 21 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, nswordcell) <= getMP() and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_HEAVY_SWORD)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 16 and sworddégats> mindamage) {
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_HEAVY_SWORD)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, nicebergcell) <= getMP() and icebergdégats > 0 and lightningdégats > 0 and icebergdégats + lightningdégats > rhinodégats + stalactitedégats) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_LIGHTNING, enemy)
+		}
+		if (getTP() >= 11 and rhinodégats> mindamage and stalactitedégats > 0) {
+			moveTowardCell(nrhinocell)
+			useChip(CHIP_STALACTITE, enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, nicebergcell) <= getMP() and icebergdégats> 0) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 11 and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 6 and stalactitedégats> 0) {
+			moveTowardCell(nstalactitecell)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 5 and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+		}
+	}
+		
+	if (getWeapon() == WEAPON_HEAVY_SWORD) {
+		if (getTP() >= 26 and getPathLength(macase, nicebergcell) + getPathLength(nicebergcell, nswordcell) and sworddégats > mindamage and icebergdégats > 0 and lightningdégats > 0) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_LIGHTNING, enemy)
+			moveTowardCell(nswordcell)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nicebergcell) + getPathLength(nicebergcell, nswordcell) and sworddégats > mindamage and icebergdégats > 0 and icebergdégats > 2 * rhinodégats) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			moveTowardCell(nswordcell)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nswordcell) + 1 and rhinodégats > mindamage) {
+			moveTowardCell(nswordcell)
+			useWeapon(enemy)
+			moveAwayFrom(enemy, 1)
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 21 and getPathLength(macase, nstalactitecell) + getPathLength(nstalactitecell, nswordcell) and sworddégats > mindamage and stalactitedégats > 0) {
+			moveTowardCell(nstalactitecell)
+			useChip(CHIP_STALACTITE, enemy)
+			moveTowardCell(nswordcell)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 21 and getPathLength(macase, nswordcell) + 1 and rhinodégats > mindamage) {
+			moveTowardCell(nswordcell)
+			useWeapon(enemy)
+			moveAwayFrom(enemy, 1)
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 15 and sworddégats > mindamage) {
+			moveTowardCell(nswordcell)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, nicebergcell) <= getMP() and icebergdégats > 0 and lightningdégats > 0) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_LIGHTNING, enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, nicebergcell) <= getMP() and icebergdégats > 0) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 11 and rhinodégats > mindamage) {
+			moveTowardCell(nrhinocell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 6 and stalactitedégats> 0) {
+			moveTowardCell(nstalactitecell)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 6 and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+		}
+	}
+}
+
+
+// CAS 5
+if (getPathLength(macase, nrhinocell) <= getMP() and getPathLength(macase, neleccell) <= getMP() and getPathLength(macase, nswordcell) > getMP() and getTP()>=5) {
+	debug("Cas 5")
+	if (getWeapon() == WEAPON_HEAVY_SWORD) {
+		setWeapon(WEAPON_RHINO)
+	}
+	if (getWeapon() == WEAPON_RHINO) {
+		if (getTP() >= 26 and getChipCooldown(CHIP_LIBERATION) == 0 and 4 * rhinodégatsl > 5 * rhinodégats and rhinodégatsl > mindamage) {
+			moveTowardCell(nliberationcell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nicebergcell) + getPathLength(nicebergcell, nrhinocell) + getPathLength(nrhinocell, neleccell) <= getMP() and rhinodégats > mindamage and icebergdégats > 0 and stalactitedégats > 0 and elecdégats + stalactitedégats > 2 * rhinodégats + lightningdégats) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_STALACTITE, enemy)
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			moveTowardCell(neleccell)
+			setWeapon(WEAPON_ELECTRISOR)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, nicebergcell) + getPathLength(nrhinocell, neleccell) <= getMP() and rhinodégats > mindamage and icebergdégats > 0 and lightningdégats > 0) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_LIGHTNING, enemy)
+		}
+		if (getTP() >= 26 and rhinodégats > mindamage and stalactitedégats > 0) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, neleccell) <= getMP() and rhinodégats > mindamage and stalactitedégats > 0 and stalactitedégats + elecdégats > 3 * rhinodégats) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useChip(CHIP_STALACTITE, enemy)
+			moveTowardCell(neleccell)
+			setWeapon(WEAPON_ELECTRISOR)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, neleccell) <= getMP() and rhinodégats > mindamage and stalactitedégats > 0 and stalactitedégats + elecdégats > 3 * rhinodégats) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useChip(CHIP_STALACTITE, enemy)
+			moveTowardCell(neleccell)
+			setWeapon(WEAPON_ELECTRISOR)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, neleccell) <= getMP() and rhinodégats > mindamage and 2 * elecdégats > 3 * rhinodégats) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			moveTowardCell(neleccell)
+			setWeapon(WEAPON_ELECTRISOR)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 26 and rhinodégats > mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 21 and getChipCooldown(CHIP_LIBERATION) == 0 and 3 * rhinodégatsl > 4 * rhinodégats and rhinodégatsl > mindamage) {
+			moveTowardCell(nliberationcell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 21 and getPathLength(macase, nicebergcell) + getPathLength(nicebergcell, neleccell) <= getMP() and elecdégats > mindamage and icebergdégats > 0 and stalactitedégats > 0 and elecdégats + stalactitedégats > 2 * rhinodégats + lightningdégats) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_STALACTITE, enemy)
+			moveTowardCell(neleccell)
+			setWeapon(WEAPON_ELECTRISOR)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 21 and getPathLength(macase, neleccell) + getPathLength(neleccell, nicebergcell) <= getMP() and elecdégats > mindamage and icebergdégats > 0 and stalactitedégats > 0 and elecdégats + stalactitedégats > 2 * rhinodégats + lightningdégats) {
+			moveTowardCell(neleccell)
+			setWeapon(WEAPON_ELECTRISOR)
+			useWeapon(enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 21 and elecdégats > mindamage and stalactitedégats > 0 and 2 * elecdégats > 3 * rhinodégats) {
+			moveTowardCell(neleccell)
+			setWeapon(WEAPON_ELECTRISOR)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 21 and getPathLength(macase, nicebergcell) + getPathLength(nicebergcell, nrhinocell) + getPathLength(nrhinocell, neleccell) <= getMP() and rhinodégats > mindamage and icebergdégats > 0 and elecdégats + rhinodégats + icebergdégats> 3 * rhinodégats + stalactitedégats) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			moveTowardCell(neleccell)
+			setWeapon(WEAPON_ELECTRISOR)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 21 and rhinodégats > mindamage and stalactitedégats > 0) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 21 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, neleccell) <= getMP() and rhinodégats > mindamage and 2 * elecdégats > 3 * rhinodégats) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			moveTowardCell(neleccell)
+			setWeapon(WEAPON_ELECTRISOR)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 21 and rhinodégats > mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 16 and getChipCooldown(CHIP_LIBERATION) == 0 and 2 * rhinodégatsl > 3 * rhinodégats and rhinodégatsl > mindamage) {
+			moveTowardCell(nliberationcell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 16 and getPathLength(macase, nicebergcell) + getPathLength(nicebergcell, neleccell) <= getMP() and elecdégats > mindamage and icebergdégats > 0 and elecdégats > 3 * rhinodégats + lightningdégats) {
+			moveTowardCell(neleccell)
+			setWeapon(WEAPON_ELECTRISOR)
+			useWeapon(enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 16 and getPathLength(macase, neleccell) + getPathLength(neleccell, nicebergcell) <= getMP() and elecdégats > mindamage and icebergdégats > 0 and elecdégats > 3 * rhinodégats + lightningdégats) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			moveTowardCell(neleccell)
+			setWeapon(WEAPON_ELECTRISOR)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 16 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, nicebergcell) <= getMP() and rhinodégats > mindamage and icebergdégats > 0 and lightningdégats > 0) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_LIGHTNING, enemy)
+		}
+		if (getTP() >= 16 and rhinodégats > mindamage and stalactitedégats > 0) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 16 and elecdégats > mindamage and 2 * elecdégats > 3 * rhinodégats) {
+			moveTowardCell(neleccell)
+			setWeapon(WEAPON_ELECTRISOR)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 16 and rhinodégats > mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 11 and getChipCooldown(CHIP_LIBERATION) == 0 and rhinodégatsl > 2 * rhinodégats and rhinodégatsl > mindamage) {
+			moveTowardCell(nliberationcell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, nicebergcell) <= getMP() and icebergdégats > 0 and lightningdégats > 0 and icebergdégats + lightningdégats > rhinodégats + stalactitedégats) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_LIGHTNING, enemy)
+		}
+		if (getTP() >= 11 and rhinodégats> mindamage and stalactitedégats > 0) {
+			moveTowardCell(nrhinocell)
+			useChip(CHIP_STALACTITE, enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, nicebergcell) <= getMP() and icebergdégats> 0) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 11 and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 6 and stalactitedégats> 0) {
+			moveTowardCell(nstalactitecell)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 5 and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+		}
+	}
+	if (getWeapon() == WEAPON_ELECTRISOR) {
+		if (getTP() >= 26 and getChipCooldown(CHIP_LIBERATION) == 0 and 4 * rhinodégatsl > 5 * rhinodégats and rhinodégatsl > mindamage) {
+			moveTowardCell(nliberationcell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, neleccell) + getPathLength(neleccell, nrhinocell) + getPathLength(nrhinocell, nicebergcell) <= getMP() and rhinodégats > mindamage and icebergdégats > 0 and stalactitedégats > 0 and elecdégats + stalactitedégats + icebergdégats > 4 * rhinodégats) {
+			moveTowardCell(neleccell)
+			useWeapon(enemy)
+			moveTowardCell(nrhinocell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, neleccell) + getPathLength(neleccell, nrhinocell) <= getMP() and rhinodégats > mindamage and stalactitedégats > 0 and 2 * elecdégats + stalactitedégats> 4 * rhinodégats) {
+			moveTowardCell(neleccell)
+			useWeapon(enemy)
+			moveTowardCell(nrhinocell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, neleccell) + getPathLength(neleccell, nrhinocell) + getPathLength(nrhinocell, nicebergcell)<= getMP() and rhinodégats > mindamage and icebergdégats > 0 and 2 * elecdégats + icebergdégats> 4 * rhinodégats) {
+			moveTowardCell(neleccell)
+			useWeapon(enemy)
+			moveTowardCell(nrhinocell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, neleccell) + getPathLength(neleccell, nrhinocell) <= getMP() and rhinodégats > mindamage and 2 * elecdégats > 3 * rhinodégats) {
+			moveTowardCell(neleccell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			moveTowardCell(nrhinocell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 26 and rhinodégats > mindamage) {
+			moveTowardCell(nrhinocell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 21 and getChipCooldown(CHIP_LIBERATION) == 0 and 3 * rhinodégatsl > 4 * rhinodégats and rhinodégatsl > mindamage) {
+			moveTowardCell(nliberationcell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 21 and getPathLength(macase, neleccell) + getPathLength(neleccell, nicebergcell) <= getMP() and elecdégats > mindamage and icebergdégats > 0 and 2 * elecdégats + icebergdégats > 4 * rhinodégats) {
+			moveTowardCell(neleccell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 21 and getPathLength(macase, nicebergcell) + getPathLength(nicebergcell, neleccell) <= getMP() and elecdégats > mindamage and icebergdégats > 0 and 2 * elecdégats + icebergdégats > 4 * rhinodégats) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			moveTowardCell(neleccell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 21 and elecdégats > mindamage and 3 * elecdégats > 4 * rhinodégats) {
+			moveTowardCell(neleccell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 21 and rhinodégats > mindamage) {
+			moveTowardCell(nrhinocell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 16 and getChipCooldown(CHIP_LIBERATION) == 0 and 2 * rhinodégatsl > 3 * rhinodégats and rhinodégatsl > mindamage) {
+			moveTowardCell(nliberationcell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 16 and getPathLength(macase, neleccell) + getPathLength(neleccell, nicebergcell) <= getMP() and elecdégats > mindamage and icebergdégats > 0 and elecdégats + icebergdégats > 3 * rhinodégats) {
+			moveTowardCell(neleccell)
+			useWeapon(enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 16 and getPathLength(macase, nicebergcell) + getPathLength(nicebergcell, neleccell) <= getMP() and elecdégats > mindamage and icebergdégats > 0 and elecdégats + icebergdégats > 3 * rhinodégats) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			moveTowardCell(neleccell)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 16 and elecdégats > mindamage and 2 * elecdégats > 3 * rhinodégats) {
+			moveTowardCell(neleccell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 16 and rhinodégats > mindamage) {
+			moveTowardCell(nrhinocell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 11 and getChipCooldown(CHIP_LIBERATION) == 0 and rhinodégatsl > 2 * rhinodégats and rhinodégatsl > mindamage) {
+			moveTowardCell(nliberationcell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, nicebergcell) <= getMP() and icebergdégats > 0 and lightningdégats > 0) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_LIGHTNING, enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, nicebergcell) <= getMP() and icebergdégats > 0) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, neleccell) + getPathLength(neleccell, nlightningcell)<= getMP() and elecdégats > mindamage and lightningdégats > 0 and elecdégats + lightningdégats > 2 * rhinodégats) {
+			moveTowardCell(neleccell)
+			useWeapon(enemy)
+			moveTowardCell(CHIP_LIGHTNING)
+			useChip(CHIP_LIGHTNING, enemy)
+		}
+		if (getTP() >= 11 and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 6 and stalactitedégats> 0) {
+			moveTowardCell(nstalactitecell)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 6 and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+		}
+	}
+}
+	
+// CAS 6
+if (getPathLength(macase, nrhinocell) <= getMP() and getPathLength(macase, neleccell) <= getMP() and getPathLength(macase, nswordcell) <= getMP() and getTP()>=5) {
+	debug("Cas 6")
+	if (getWeapon() == WEAPON_RHINO) {
+		if (getTP() >= 26 and getCooldown(CHIP_LIBERATION) == 0 and sworddégatsl + rhinodégatsl > 2 * rhinodégats + sworddégats and rhinodégatsl > mindamage) {
+			moveTowardCell(nliberationcell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nicebergcell) + getPathLength(nicebergcell, nswordcell) <= getMP() and sworddégats> mindamage and icebergdégats > 0 and icebergdégats > 2 * rhinodégats) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_HEAVY_SWORD)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nswordcell) + getPathLength(nswordcell, nicebergcell) <= getMP() and sworddégats> mindamage and icebergdégats > 0 and icebergdégats > 2 * rhinodégats) {
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_HEAVY_SWORD)
+			useWeapon(enemy)
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, nswordcell) <= getMP() and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_HEAVY_SWORD)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 21 and getCooldown(CHIP_LIBERATION) == 0 and sworddégatsl > rhinodégats + sworddégats and sworddégatsl > mindamage) {
+			moveTowardCell(nswordcell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 21 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, nswordcell) <= getMP() and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_HEAVY_SWORD)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 16 and getCooldown(CHIP_LIBERATION) == 0 and 2 * rhinodégatsl > sworddégats and rhinodégatsl > mindamage) {
+			moveTowardCell(nliberationcell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 16 and sworddégats> mindamage) {
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_HEAVY_SWORD)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 11 and getCooldown(CHIP_LIBERATION) == 0 and rhinodégatsl > 2 * rhinodégats and rhinodégatsl > mindamage) {
+			moveTowardCell(nrhinocell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, nicebergcell) <= getMP() and icebergdégats > 0 and lightningdégats > 0 and icebergdégats + lightningdégats > rhinodégats + stalactitedégats) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_LIGHTNING, enemy)
+		}
+		if (getTP() >= 11 and rhinodégats> mindamage and stalactitedégats > 0) {
+			moveTowardCell(nrhinocell)
+			useChip(CHIP_STALACTITE, enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, nicebergcell) <= getMP() and icebergdégats> 0) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 11 and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 6 and stalactitedégats> 0) {
+			moveTowardCell(nstalactitecell)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 5 and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+		}
+	}
+	if (getWeapon() == WEAPON_ELECTRISOR) {
+		if (getTP() >= 26 and getCooldown(CHIP_LIBERATION) == 0 and 4 * rhinodégatsl > 5 * rhinodégats and rhinodégatsl > mindamage) {
+			moveTowardCell(nliberationcell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nicebergcell) + getPathLength(nicebergcell, nswordcell) <= getMP() and sworddégats> mindamage and icebergdégats > 0 and sworddégats + icebergdégats > 5 * rhinodégats) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_HEAVY_SWORD)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, neleccell) + getPathLength(neleccell, nswordcell) <= getMP() and elecdégats> mindamage and sworddégats + icebergdégats > 5 * rhinodégats) {
+			moveTowardCell(neleccell)
+			useWeapon(enemy)
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_HEAVY_SWORD)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nstalactitecell) + getPathLength(nstalactitecell, nswordcell) <= getMP() and sworddégats> mindamage and stalactitedégats > 0 and sworddégats + icebergdégats > 5 * rhinodégats) {
+			moveTowardCell(nstalactitecell)
+			useChip(CHIP_STALACTITE, enemy)
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_HEAVY_SWORD)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nrhinocell) + getPathLength(nrhinocell, nswordcell) <= getMP() and rhinodégats> mindamage and sworddégats + icebergdégats > 5 * rhinodégats) {
+			moveTowardCell(nrhinocell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_HEAVY_SWORD)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 26 and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 21 and getCooldown(CHIP_LIBERATION) == 0 and sworddégatsl > sworddégats and sworddégatsl > mindamage) {
+			moveTowardCell(nswordcell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 21 and 4 * rhinodégats > sworddégats and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 16 and getCooldown(CHIP_LIBERATION) == 0 and 2 * rhinodégatsl > sworddégats and rhinodégatsl > mindamage) {
+			moveTowardCell(nliberationcell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 16 and sworddégats> mindamage) {
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_HEAVY_SWORD)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 11 and getCooldown(CHIP_LIBERATION) == 0 and rhinodégatsl > 2 * rhinodégats and rhinodégatsl > mindamage) {
+			moveTowardCell(nrhinocell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, nicebergcell) <= getMP() and icebergdégats > 0 and lightningdégats > 0) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_LIGHTNING, enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, nicebergcell) <= getMP() and icebergdégats > 0) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, neleccell) + getPathLength(neleccell, nlightningcell)<= getMP() and elecdégats > mindamage and lightningdégats > 0 and elecdégats + lightningdégats > 2 * rhinodégats) {
+			moveTowardCell(neleccell)
+			useWeapon(enemy)
+			moveTowardCell(CHIP_LIGHTNING)
+			useChip(CHIP_LIGHTNING, enemy)
+		}
+		if (getTP() >= 11 and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 6 and stalactitedégats> 0) {
+			moveTowardCell(nstalactitecell)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 6 and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+		}
+	}
+	if (getWeapon() == WEAPON_HEAVY_SWORD) {
+		if (getTP() >= 26 and getCooldown(CHIP_LIBERATION) == 0 and sworddégatsl + rhinodégatsl > sworddégats + 2 * rhinodégats and rhinodégatsl > mindamage) {
+			moveTowardCell(nswordcell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nicebergcell) + getPathLength(nicebergcell, nswordcell) and sworddégats > mindamage and icebergdégats > 0 and lightningdégats > 0) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_LIGHTNING, enemy)
+			moveTowardCell(nswordcell)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nicebergcell) + getPathLength(nicebergcell, nswordcell) and sworddégats > mindamage and icebergdégats > 0 and icebergdégats > 2 * rhinodégats) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			moveTowardCell(nswordcell)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 26 and getPathLength(macase, nswordcell) + 1 and rhinodégats > mindamage) {
+			moveTowardCell(nswordcell)
+			useWeapon(enemy)
+			moveAwayFrom(enemy, 1)
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 21 and getCooldown(CHIP_LIBERATION) == 0 and sworddégatsl > sworddégats + rhinodégats and sworddégatsl > mindamage) {
+			moveTowardCell(nswordcell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 21 and getPathLength(macase, nstalactitecell) + getPathLength(nstalactitecell, nswordcell) and sworddégats > mindamage and stalactitedégats > 0) {
+			moveTowardCell(nstalactitecell)
+			useChip(CHIP_STALACTITE, enemy)
+			moveTowardCell(nswordcell)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 21 and getPathLength(macase, nswordcell) + 1 and rhinodégats > mindamage) {
+			moveTowardCell(nswordcell)
+			useWeapon(enemy)
+			moveAwayFrom(enemy, 1)
+			moveTowardCell(nswordcell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 16 and getCooldown(CHIP_LIBERATION) == 0 and 2 * rhinodégatsl > sworddégats and rhinodégatsl > mindamage) {
+			moveTowardCell(nliberationcell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 15 and sworddégats > mindamage) {
+			moveTowardCell(nswordcell)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 11 and getCooldown(CHIP_LIBERATION) == 0 and rhinodégatsl > 2 * rhinodégats and rhinodégatsl > mindamage) {
+			moveTowardCell(nrhinocell)
+			useChip(CHIP_LIBERATION, enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, nicebergcell) <= getMP() and icebergdégats > 0 and lightningdégats > 0) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+			useChip(CHIP_LIGHTNING, enemy)
+		}
+		if (getTP() >= 11 and getPathLength(macase, nicebergcell) <= getMP() and icebergdégats > 0) {
+			moveTowardCell(nicebergcell)
+			useChip(CHIP_ICEBERG, enemy)
+		}
+		if (getTP() >= 11 and rhinodégats > mindamage) {
+			moveTowardCell(nrhinocell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+			useWeapon(enemy)
+		}
+		if (getTP() >= 6 and stalactitedégats> 0) {
+			moveTowardCell(nstalactitecell)
+			useChip(CHIP_STALACTITE, enemy)
+		}
+		if (getTP() >= 6 and rhinodégats> mindamage) {
+			moveTowardCell(nrhinocell)
+			setWeapon(WEAPON_RHINO)
+			useWeapon(enemy)
+		}
+	}
+}
+
+//Bulb
+moveTowardCell(eleccell)
+
+var Soultaker = null
+
+for (var leek in getAllies() ) { 
+	if (getTotalLife(leek) == 2000) {
+		Soultaker = leek
+	}
+}
+
+
+
+if (Soultaker == null or getLife(Soultaker) == 0) {
+	if (totalstrength >= 300) {
+	summon(CHIP_METALLIC_BULB , getCellToUseChip(CHIP_METALLIC_BULB, 		getEntity()), IA_bulbe_métallique)
+}
+}
+summon(CHIP_SAVANT_BULB , getCellToUseChip(CHIP_SAVANT_BULB, getEntity()), IA_bulbe_savant)
+summon(CHIP_HEALER_BULB , getCellToUseChip(CHIP_HEALER_BULB, getEntity()), IA_bulbe_heal)
+
+//NEW
+useChip(CHIP_STEROID, me)
+useChip(CHIP_ELEVATION, me)
+useChip(CHIP_PROTEIN, me)
+useChip(CHIP_ARMORING, me)
+
+if (totalstrength >= 300) {
+	useChip(CHIP_ARMOR, me)
+	useChip(CHIP_FORTRESS, me)
+}
+
+useChip(CHIP_SERUM, me)
+if (getLife()<getTotalLife()-300) {
+	useChip(CHIP_REMISSION, me)
+}
+
+
+//debug
+debug("Opérations : " + getOperations())
+
+function afterFight() {
+	if (getWinner() == getEntity())
+	{
+	say("Victoire!")
+}
+}
